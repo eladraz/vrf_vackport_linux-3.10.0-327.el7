@@ -1515,6 +1515,7 @@ void ip_send_unicast_reply(struct sock *sk, struct sk_buff *skb,
 	struct net *net = sock_net(sk);
 	struct sk_buff *nskb;
 	int err;
+	int oif;
 
 	if (__ip_options_echo(&replyopts.opt.opt, skb, sopt))
 		return;
@@ -1532,7 +1533,11 @@ void ip_send_unicast_reply(struct sock *sk, struct sk_buff *skb,
 			daddr = replyopts.opt.opt.faddr;
 	}
 
-	flowi4_init_output(&fl4, arg->bound_dev_if, 0,
+	oif = arg->bound_dev_if;
+	if (!oif && netif_index_is_vrf(net, skb->skb_iif))
+		oif = skb->skb_iif;
+
+	flowi4_init_output(&fl4, oif, 0,
 			   RT_TOS(arg->tos),
 			   RT_SCOPE_UNIVERSE, ip_hdr(skb)->protocol,
 			   ip_reply_arg_flowi_flags(arg),
