@@ -22,6 +22,8 @@ struct flowi_common {
 #define FLOWI_FLAG_ANYSRC		0x01
 /* This has changed to 0x02 upstream. Preserved here to remain ABI compatible. */
 #define FLOWI_FLAG_KNOWN_NH		0x04
+/* This was to 0x04 upstream. Changed here to 0x05. */
+#define FLOWI_FLAG_VRFSRC		0x05
 	__u32	flowic_secid;
 };
 
