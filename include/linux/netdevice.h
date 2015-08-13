@@ -1247,6 +1247,8 @@ enum netdev_priv_flags {
 	IFF_LIVE_ADDR_CHANGE		= 1<<20,
 	IFF_MACVLAN			= 1<<21,
 	IFF_XMIT_DST_RELEASE_PERM	= 1<<22,
+
+	IFF_VRF_MASTER			= 1<<25,
 };
 
 #define IFF_802_1Q_VLAN			IFF_802_1Q_VLAN
@@ -1272,6 +1274,8 @@ enum netdev_priv_flags {
 #define IFF_LIVE_ADDR_CHANGE		IFF_LIVE_ADDR_CHANGE
 #define IFF_MACVLAN			IFF_MACVLAN
 #define IFF_XMIT_DST_RELEASE_PERM	IFF_XMIT_DST_RELEASE_PERM
+
+#define IFF_VRF_MASTER			IFF_VRF_MASTER
 
 /*
  *	The DEVICE structure.
@@ -1417,6 +1421,7 @@ struct net_device {
 #if IS_ENABLED(CONFIG_NET_DSA)
 	struct dsa_switch_tree	*dsa_ptr;	/* dsa specific data */
 #endif
+	struct net_vrf_dev __rcu *vrf_ptr;
 	void 			*atalk_ptr;	/* AppleTalk link 	*/
 	struct in_device __rcu	*ip_ptr;	/* IPv4 specific data	*/
 	struct dn_dev __rcu     *dn_ptr;        /* DECnet specific data */
@@ -3486,6 +3491,22 @@ static inline bool netif_is_bond_slave(struct net_device *dev)
 static inline bool netif_supports_nofcs(struct net_device *dev)
 {
 	return dev->priv_flags & IFF_SUPP_NOFCS;
+}
+
+static inline bool netif_is_vrf(const struct net_device *dev)
+{
+	return dev->priv_flags & IFF_VRF_MASTER;
+}
+
+static inline bool netif_index_is_vrf(struct net *net, int ifindex)
+{
+	struct net_device *dev = dev_get_by_index_rcu(net, ifindex);
+	bool rc = false;
+
+	if (dev)
+		rc = netif_is_vrf(dev);
+
+	return rc;
 }
 
 /* This device needs to keep skb dst for qdisc enqueue or ndo_start_xmit() */
