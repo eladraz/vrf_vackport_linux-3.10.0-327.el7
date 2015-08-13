@@ -184,6 +184,7 @@ extern void ipv4_sk_redirect(struct sk_buff *skb, struct sock *sk);
 extern void ip_rt_send_redirect(struct sk_buff *skb);
 
 extern unsigned int		inet_addr_type(struct net *net, __be32 addr);
+extern unsigned int 		inet_addr_type_table(struct net *net, __be32 addr, int tb_id);
 extern unsigned int		inet_dev_addr_type(struct net *net, const struct net_device *dev, __be32 addr);
 extern void		ip_rt_multicast_event(struct in_device *);
 extern int		ip_rt_ioctl(struct net *, unsigned int cmd, void __user *arg);
