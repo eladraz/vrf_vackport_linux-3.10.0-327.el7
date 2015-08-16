@@ -1222,6 +1222,7 @@ struct net_device_ops {
  * @IFF_LIVE_ADDR_CHANGE: device supports hardware address
  *	change when it's running
  * @IFF_MACVLAN: Macvlan device
+ * @IFF_VRF_MASTER: device is a VRF master
  */
 enum netdev_priv_flags {
 	IFF_802_1Q_VLAN			= 1<<0,
