@@ -20,6 +20,7 @@
 #include <net/ip.h>
 #include <net/ipv6.h>
 #include <net/ip6_route.h>
+#include <net/vrf.h>
 #if IS_ENABLED(CONFIG_IPV6_MIP6)
 #include <net/mip6.h>
 #endif
@@ -135,8 +136,10 @@ _decode_session6(struct sk_buff *skb, struct flowi *fl, int reverse)
 	u8 nexthdr = nh[IP6CB(skb)->nhoff];
 	int oif = 0;
 
-	if (skb_dst(skb))
-		oif = skb_dst(skb)->dev->ifindex;
+	if (skb_dst(skb)) {
+		oif = vrf_master_ifindex(skb_dst(skb)->dev) ?
+			: skb_dst(skb)->dev->ifindex;
+	}
 
 	memset(fl6, 0, sizeof(struct flowi6));
 	fl6->flowi6_mark = skb->mark;
