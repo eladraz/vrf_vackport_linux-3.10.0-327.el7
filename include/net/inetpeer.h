@@ -16,11 +16,17 @@
 #include <linux/atomic.h>
 #include <linux/rh_kabi.h>
 
+/* IPv4 address key for cache lookups */
+struct ipv4_addr_key {
+	__be32	addr;
+	int	vif;
+};
+
 #define INETPEER_MAXKEYSZ   (sizeof(struct in6_addr) / sizeof(u32))
 
 struct inetpeer_addr {
 	union {
-		__be32			a4;
+		struct ipv4_addr_key	a4;
 		__be32			addr6[4];
 		RH_KABI_EXTEND(struct in6_addr in6)
 		RH_KABI_EXTEND(struct in6_addr a6)
@@ -130,13 +136,13 @@ void inet_initpeers(void) __init;
 
 static inline void inetpeer_set_addr_v4(struct inetpeer_addr *iaddr, __be32 ip)
 {
-	iaddr->a4 = ip;
+	iaddr->a4.addr = ip;
 	iaddr->family = AF_INET;
 }
 
 static inline __be32 inetpeer_get_addr_v4(struct inetpeer_addr *iaddr)
 {
-	return iaddr->a4;
+	return iaddr->a4.addr;
 }
 
 static inline void inetpeer_set_addr_v6(struct inetpeer_addr *iaddr,
@@ -163,11 +169,12 @@ struct inet_peer *inet_getpeer(struct inet_peer_base *base,
 
 static inline struct inet_peer *inet_getpeer_v4(struct inet_peer_base *base,
 						__be32 v4daddr,
-						int create)
+						int vif, int create)
 {
 	struct inetpeer_addr daddr;
 
-	daddr.a4 = v4daddr;
+	daddr.a4.addr = v4daddr;
+	daddr.a4.vif = vif;
 	daddr.family = AF_INET;
 	return inet_getpeer(base, &daddr, create);
 }

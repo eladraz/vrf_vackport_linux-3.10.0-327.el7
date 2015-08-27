@@ -490,7 +490,7 @@ relookup:
 		atomic_set(&p->rid, 0);
 		atomic_set(&p->ip_id_count,
 				(daddr->family == AF_INET) ?
-					secure_ip_id(daddr->a4) :
+					secure_ip_id(daddr->a4.addr) :
 					secure_ipv6_id(daddr->addr6));
 		p->metrics[RTAX_LOCK-1] = INETPEER_METRICS_NEW;
 		p->rate_tokens = 0;
