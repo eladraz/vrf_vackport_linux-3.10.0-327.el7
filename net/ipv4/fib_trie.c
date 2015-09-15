@@ -1376,7 +1376,7 @@ found:
 
 			if (nh->nh_flags & RTNH_F_DEAD)
 				continue;
-			if (!(flp->flowi4_flags & FLOWI_FLAG_VRFSRC)) {
+			if (!(flp->flowi4_flags & FLOWI_FLAG_SKIP_NH_OIF)) {
 				if (flp->flowi4_oif &&
 				    flp->flowi4_oif != nh->nh_oif)
 					continue;

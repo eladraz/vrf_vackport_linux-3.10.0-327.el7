@@ -24,6 +24,7 @@ struct flowi_common {
 #define FLOWI_FLAG_KNOWN_NH		0x04
 /* This was to 0x04 upstream. Changed here to 0x05. */
 #define FLOWI_FLAG_VRFSRC		0x05
+#define FLOWI_FLAG_SKIP_NH_OIF		0x08
 	__u32	flowic_secid;
 };
 
