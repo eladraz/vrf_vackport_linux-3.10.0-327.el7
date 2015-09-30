@@ -1424,7 +1424,6 @@ struct net_device {
 #if IS_ENABLED(CONFIG_NET_DSA)
 	struct dsa_switch_tree	*dsa_ptr;	/* dsa specific data */
 #endif
-	struct net_vrf_dev __rcu *vrf_ptr;
 	void 			*atalk_ptr;	/* AppleTalk link 	*/
 	struct in_device __rcu	*ip_ptr;	/* IPv4 specific data	*/
 	struct dn_dev __rcu     *dn_ptr;        /* DECnet specific data */
