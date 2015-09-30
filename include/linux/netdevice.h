@@ -1222,7 +1222,7 @@ struct net_device_ops {
  * @IFF_LIVE_ADDR_CHANGE: device supports hardware address
  *	change when it's running
  * @IFF_MACVLAN: Macvlan device
- * @IFF_VRF_MASTER: device is a VRF master
+ * @IFF_L3MDEV_MASTER: device is an L3 master device
  */
 enum netdev_priv_flags {
 	IFF_802_1Q_VLAN			= 1<<0,
@@ -1249,7 +1249,7 @@ enum netdev_priv_flags {
 	IFF_MACVLAN			= 1<<21,
 	IFF_XMIT_DST_RELEASE_PERM	= 1<<22,
 
-	IFF_VRF_MASTER			= 1<<25,
+	IFF_L3MDEV_MASTER		= 1<<25,
 };
 
 #define IFF_802_1Q_VLAN			IFF_802_1Q_VLAN
@@ -1275,8 +1275,7 @@ enum netdev_priv_flags {
 #define IFF_LIVE_ADDR_CHANGE		IFF_LIVE_ADDR_CHANGE
 #define IFF_MACVLAN			IFF_MACVLAN
 #define IFF_XMIT_DST_RELEASE_PERM	IFF_XMIT_DST_RELEASE_PERM
-
-#define IFF_VRF_MASTER			IFF_VRF_MASTER
+#define IFF_L3MDEV_MASTER		IFF_L3MDEV_MASTER
 
 /*
  *	The DEVICE structure.
@@ -3494,12 +3493,12 @@ static inline bool netif_supports_nofcs(struct net_device *dev)
 	return dev->priv_flags & IFF_SUPP_NOFCS;
 }
 
-static inline bool netif_is_vrf(const struct net_device *dev)
+static inline bool netif_is_l3_master(const struct net_device *dev)
 {
-	return dev->priv_flags & IFF_VRF_MASTER;
+	return dev->priv_flags & IFF_L3MDEV_MASTER;
 }
 
-static inline bool netif_index_is_vrf(struct net *net, int ifindex)
+static inline bool netif_index_is_l3_master(struct net *net, int ifindex)
 {
 	bool rc = false;
 
@@ -3513,7 +3512,7 @@ static inline bool netif_index_is_vrf(struct net *net, int ifindex)
 
 	dev = dev_get_by_index_rcu(net, ifindex);
 	if (dev)
-		rc = netif_is_vrf(dev);
+		rc = netif_is_l3_master(dev);
 
 	rcu_read_unlock();
 #endif
